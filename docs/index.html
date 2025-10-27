@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CSVダウンロード例</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        background-color: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #555;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        box-sizing: border-box;
+      }
+      button {
+        background-color: #007bff;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        width: 100%;
+        margin-top: 10px;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      button:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>CSVダウンロード例</h1>
+
+      <div class="form-group">
+        <label for="csvContent">CSVコンテンツ:</label>
+        <textarea
+          id="csvContent"
+          rows="10"
+          placeholder="CSVデータを入力してください"
+        >
+名前,年齢,部署
+田中太郎,30,営業部
+佐藤花子,25,総務部
+山田次郎,35,開発部</textarea
+        >
+      </div>
+
+      <button id="downloadBtn" onclick="downloadCsv()">CSVダウンロード</button>
+    </div>
+
+    <script>
+      function downloadCsv() {
+        const csvContent = document.getElementById("csvContent").value;
+        const downloadBtn = document.getElementById("downloadBtn");
+
+        if (!csvContent) {
+          alert("CSVコンテンツを入力してください");
+          return;
+        }
+
+        try {
+          downloadBtn.disabled = true;
+          downloadBtn.textContent = "ダウンロード中...";
+
+          const BOM = "\uFEFF";
+          const blob = new Blob([BOM + csvContent], {
+            type: "text/csv;charset=utf-8;",
+          });
+          const link = document.createElement("a");
+          link.href = URL.createObjectURL(blob);
+          link.download = "download-example.csv";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(link.href);
+
+          alert("ダウンロードが完了しました");
+        } catch (error) {
+          alert("ダウンロードに失敗しました: " + error.message);
+        } finally {
+          console.log("ダウンロード処理完了");
+          downloadBtn.disabled = false;
+          downloadBtn.textContent = "CSVダウンロード";
+        }
+      }
+    </script>
+  </body>
+</html>
